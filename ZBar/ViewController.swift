@@ -8,6 +8,12 @@
 
 import UIKit
 
+extension ZBarSymbolSet: Sequence {
+    public func makeIterator() -> NSFastEnumerationIterator {
+        return NSFastEnumerationIterator(self)
+    }
+}
+
 class ViewController: UIViewController, ZBarReaderDelegate {
 
     var reader: ZBarReaderViewController!
@@ -28,8 +34,12 @@ class ViewController: UIViewController, ZBarReaderDelegate {
     
     // ZBar delegate method
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let results = info[ZBarReaderControllerResults]
-        print(String(describing: results))
+        let codes = info[ZBarReaderControllerResults]! as! NSFastEnumeration
+        
+        for case let code as ZBarSymbol in codes as! ZBarSymbolSet {
+            let result = String(code.data)
+            print(result)
+        }
     }
 
 }
